@@ -1,6 +1,6 @@
-@AirportManagement.Api_HostAddress = http://localhost:5080
+@AirportManagement.WebApi_HostAddress = http://localhost:5080
 
-GET {{AirportManagement.Api_HostAddress}}/weatherforecast/
+GET {{AirportManagement.WebApi_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
