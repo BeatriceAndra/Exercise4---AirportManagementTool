@@ -41,5 +41,14 @@ namespace AirportTool.Infrastructure.Repositories
                 fs.ScheduledArrivalUtc > departure,
                 cancellationToken);
         }
+        public async Task<FlightSchedule?> GetByFlightAndDepartureAsync(int flightId, DateTime scheduledDepartureUtc, CancellationToken cancellationToken = default)
+        {
+            var entity = await _context.FlightSchedules.FirstOrDefaultAsync(fs =>fs.FlightId == flightId && fs.ScheduledDepartureUtc == scheduledDepartureUtc, cancellationToken);
+
+            if (entity == null)
+                return null;
+
+            return _mapper.Map<FlightSchedule>(entity);
+        }
     }
 }

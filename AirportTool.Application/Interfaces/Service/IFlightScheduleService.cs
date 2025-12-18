@@ -1,4 +1,5 @@
 ﻿using AirportTool.Application.DTOs.FlightSchedule;
+using Microsoft.AspNetCore.Http;
 
 namespace AirportTool.Application.Interfaces.ServiceInterfaces
 {
@@ -7,6 +8,6 @@ namespace AirportTool.Application.Interfaces.ServiceInterfaces
         Task<FlightScheduleReadDto?> GetScheduleByIdAsync(int scheduleId, CancellationToken cancellationToken = default);
         Task<IEnumerable<FlightScheduleReadDto>> GetUpcomingSchedulesAsync(int days = 7, CancellationToken cancellationToken = default);
         Task<FlightScheduleReadDto> CreateScheduleAsync(FlightScheduleCreateDto dto, CancellationToken cancellationToken = default);
-        Task<IEnumerable<FlightScheduleImportRowDto>> ImportSchedulesAsync(IEnumerable<FlightScheduleImportRowDto> schedules, CancellationToken cancellationToken = default);
+        Task<ImportResultDto> ImportSchedulesFromFileAsync(IFormFile file);
     }
 }

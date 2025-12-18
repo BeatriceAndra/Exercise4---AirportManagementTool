@@ -7,7 +7,8 @@ namespace AirportTool.Application.Interfaces.ServiceInterfaces
 {
     public interface ITicketService
     {
-        Task<TicketReadDto> GetByIdAsync(int ticketId, CancellationToken cancellationToken = default);
-        Task<IEnumerable<TicketReadDto>> GetTicketsByBookingAsync(int bookingId, CancellationToken cancellationToken = default);
+        Task<IEnumerable<TicketReadDto>> GetTicketsByFlightAsync(int flightId);
+        Task<TicketReadDto> CreateTicketAsync(TicketCreateDto dto);
+        Task DeleteTicketAsync(int ticketId);
     }
 }

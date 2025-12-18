@@ -32,10 +32,10 @@ namespace AirportTool.Infrastructure.Repositories
             return await _context.Tickets
                 .CountAsync(t => t.FlightScheduleId == flightScheduleId, cancellationToken);
         }
-        public async Task<IEnumerable<Ticket>> GetTicketsByBookingAsync(int bookingId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Ticket>> GetTicketsByFlightAsync(int flightId, CancellationToken cancellationToken = default)
         {
-            var tickets =  await _context.Tickets
-                .Where(t => t.BookingId == bookingId)
+            var tickets = await _context.Tickets
+                .Where(t => t.FlightSchedule.FlightId == flightId)
                 .ToListAsync(cancellationToken);
 
             return _mapper.Map<IEnumerable<Ticket>>(tickets);

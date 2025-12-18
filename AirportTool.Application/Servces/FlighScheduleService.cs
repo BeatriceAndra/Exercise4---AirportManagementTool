@@ -4,6 +4,8 @@ using AirportTool.Application.Interfaces;
 using AirportTool.Application.Interfaces.ServiceInterfaces;
 using AirportTool.Domain.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 namespace AirportTool.Infrastructure.Services
 {
@@ -43,61 +45,96 @@ namespace AirportTool.Infrastructure.Services
             return _mapper.Map<FlightScheduleReadDto>(entity);
         }
 
-        public async Task<IEnumerable<FlightScheduleImportRowDto>> ImportSchedulesAsync(IEnumerable<FlightScheduleImportRowDto> schedules, CancellationToken cancellationToken = default)
+        public async Task<ImportResultDto> ImportSchedulesFromFileAsync(IFormFile file)
         {
-            var results = new List<FlightScheduleImportRowDto>();
-
-            foreach (var dto in schedules)
+            if (file == null || file.Length == 0)
             {
+                throw new BadRequestException("Invalid file");
+            }
+
+            if (!file.FileName.EndsWith(".json"))
+            {
+                throw new BadRequestException("Only JSON files are allowed");
+            }
+
+            List<FlightScheduleImportRowDto>? rows;
+
+            using (var stream = file.OpenReadStream())
+            {
+                rows = await JsonSerializer.DeserializeAsync<List<FlightScheduleImportRowDto>>(
+                    stream,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+
+            if (rows == null || rows.Count == 0)
+            {
+                throw new BadRequestException("File is empty or invalid JSON");
+            }
+
+            var result = new ImportResultDto
+            {
+                Total = rows.Count
+            };
+
+            int rowIndex = 0;
+
+            foreach (var row in rows)
+            {
+                rowIndex++;
+
                 try
                 {
-                    var originAirport = await _unitOfWork.Airports.GetByIataCodeAsync(dto.OriginIata, cancellationToken);
-                    var destinationAirport = await _unitOfWork.Airports.GetByIataCodeAsync(dto.DestinationIata, cancellationToken);
+                    var originAirport = await _unitOfWork.Airports.GetByIataCodeAsync(row.OriginIata);
+                    var destinationAirport = await _unitOfWork.Airports.GetByIataCodeAsync(row.DestinationIata);
 
                     if (originAirport == null || destinationAirport == null)
                     {
-                        results.Add(dto);
-                        continue;
+                        throw new Exception("Invalid airport IATA");
                     }
 
-                    var flights = await _unitOfWork.Flights.GetFlightsByRouteAsync(
-                        originAirport.Id,
-                        destinationAirport.Id,
-                        dto.ScheduledDepartureUtc,
-                        cancellationToken);
+                    var flights = await _unitOfWork.Flights.GetFlightsByRouteAsync(originAirport.Id, destinationAirport.Id, null);
 
-                    if (!flights.Any())
+                    var flight = flights.FirstOrDefault(f => f.FlightNumber == row.FlightNumber);
+
+                    if (flight == null)
                     {
-                        results.Add(dto);
-                        continue;
+                        throw new Exception("Flight not found");
                     }
 
-                    var entity = _mapper.Map<FlightSchedule>(dto);
+                    var existingSchedule = await _unitOfWork.FlightSchedules.GetByFlightAndDepartureAsync(flight.Id, row.ScheduledDepartureUtc);
 
-                    bool hasOverlap = await _unitOfWork.FlightSchedules.CheckGateOverlapAsync(
-                        entity.GateId ?? 0,
-                        entity.ScheduledDepartureUtc,
-                        entity.ScheduledArrivalUtc,
-                        null,
-                        cancellationToken);
-
-                    if (hasOverlap)
+                    if (existingSchedule == null)
                     {
-                        results.Add(dto);
-                        continue;
-                    }
+                        var schedule = new FlightSchedule
+                        {
+                            FlightId = flight.Id,
+                            ScheduledDepartureUtc = row.ScheduledDepartureUtc,
+                            ScheduledArrivalUtc = row.ScheduledArrivalUtc,
+                            FlightStatusId = 1
+                        };
 
-                    await _unitOfWork.FlightSchedules.AddAsync(entity);
-                    results.Add(dto);
+                        await _unitOfWork.FlightSchedules.AddAsync(schedule);
+                        result.Created++;
+                    }
+                    else
+                    {
+                        existingSchedule.ScheduledArrivalUtc = row.ScheduledArrivalUtc;
+                        result.Updated++;
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    results.Add(dto);
+                    result.Errors.Add(new ImportErrorDto
+                    {
+                        Row = rowIndex,
+                        Message = ex.Message
+                    });
                 }
             }
 
             await _unitOfWork.CompleteAsync();
-            return results;
+
+            return result;
         }
 
     }

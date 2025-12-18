@@ -11,5 +11,6 @@ namespace AirportTool.Application.Interfaces.ServiceInterfaces
     {
         Task<BookingReadDto> CreateBookingAsync(BookingCreateDto dto, int userId, CancellationToken cancellationToken = default);
         Task<BookingReadDto> GetByConfirmationCodeAsync(string confirmationCode, CancellationToken cancellationToken = default);
+        Task CancelBookingAsync(string confirmationCode, CancellationToken cancellationToken = default);
     }
 }

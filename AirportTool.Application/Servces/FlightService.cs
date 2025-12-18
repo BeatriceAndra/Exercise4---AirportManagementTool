@@ -3,6 +3,7 @@ using AirportTool.Application.Exceptions;
 using AirportTool.Application.Interfaces;
 using AirportTool.Application.Interfaces.Repositories;
 using AirportTool.Application.Interfaces.ServiceInterfaces;
+using AirportTool.Domain.Entities;
 using AutoMapper;
 
 namespace AirportTool.Application.Services
@@ -40,6 +41,34 @@ namespace AirportTool.Application.Services
             }
 
             return _mapper.Map<IEnumerable<FlightReadDto>>(flights);
+        }
+        public async Task<FlightReadDto> CreateFlightAsync(FlightCreateDto dto)
+        {
+            var flight = _mapper.Map<Flight>(dto);
+            await _unitOfWork.Flights.AddAsync(flight);
+            await _unitOfWork.CompleteAsync();
+            return _mapper.Map<FlightReadDto>(flight);
+        }
+
+        public async Task UpdateFlightAsync(int id, FlightUpdateDto dto)
+        {
+            var flight = await _unitOfWork.Flights.GetByIdAsync(id);
+            if (flight == null)
+                throw new NotFoundException(nameof(Flight), id);
+
+            _mapper.Map(dto, flight);
+            await _unitOfWork.Flights.UpdateAsync(flight);
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task DeleteFlightAsync(int id)
+        {
+            var flight = await _unitOfWork.Flights.GetByIdAsync(id);
+            if (flight == null)
+                throw new NotFoundException(nameof(Flight), id);
+
+            await _unitOfWork.Flights.DeleteAsync(id);
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

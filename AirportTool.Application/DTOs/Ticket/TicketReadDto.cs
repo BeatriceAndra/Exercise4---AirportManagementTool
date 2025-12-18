@@ -4,6 +4,7 @@ namespace AirportTool.Application.DTOs.Ticket
     public class TicketReadDto
     {
         public int Id { get; set; }
+        public int FlightScheduleId { get; set; }
         public string FareClass { get; set; } = null!;
         public decimal TotalPrice { get; set; }
         public string Currency { get; set; } = "EUR";

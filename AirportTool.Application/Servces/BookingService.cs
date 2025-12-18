@@ -64,5 +64,20 @@ namespace AirportTool.Application.Services
         {
             return Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
         }
+
+        public async Task CancelBookingAsync(string confirmationCode, CancellationToken cancellationToken = default)
+        {
+            var booking = await _unitOfWork.Bookings.GetBookingByConfirmationCodeAsync(confirmationCode, cancellationToken);
+            if (booking == null)
+            {
+                throw new NotFoundException(nameof(Booking), confirmationCode);
+            }
+
+            booking.Cancel();
+
+            await _unitOfWork.Bookings.UpdateAsync(booking);
+            await _unitOfWork.CompleteAsync();
+        }
+
     }
 }
