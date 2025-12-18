@@ -10,12 +10,8 @@ namespace AirportTool.Domain.Entities
         public DateTime ScheduledArrivalUtc { get; set; }
         public int? GateId { get; set; }
         public int? AssignedAircraftId { get; set; }
-        public FlightStatus Status { get; set; } = FlightStatus.Planned;
-
-        public void ValidateTimes()
-        {
-            if (ScheduledArrivalUtc <= ScheduledDepartureUtc)
-                throw new InvalidOperationException("ScheduledArrivalUtc must be after ScheduledDepartureUtc.");
-        }
+        public int FlightStatusId { get; set; }
+        public IReadOnlyCollection<Ticket> Tickets { get; set; }
+           = new List<Ticket>();
     }
 }

@@ -1,0 +1,45 @@
+﻿using AirportTool.Application.DTOs.Flight;
+using AirportTool.Application.Exceptions;
+using AirportTool.Application.Interfaces;
+using AirportTool.Application.Interfaces.Repositories;
+using AirportTool.Application.Interfaces.ServiceInterfaces;
+using AutoMapper;
+
+namespace AirportTool.Application.Services
+{
+    public class FlightService : IFlightService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+
+        public FlightService(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+
+        public async Task<FlightReadDto> GetFlightWithSchedulesAsync(int flightId)
+        {
+            var flight = await _unitOfWork.Flights.GetFlightWithSchedulesAsync(flightId);
+
+            if (flight == null)
+            {
+                throw new NotFoundException(nameof(GetFlightWithSchedulesAsync), flightId);
+            }
+
+            return _mapper.Map<FlightReadDto>(flight);
+        }
+
+        public async Task<IEnumerable<FlightReadDto>> GetFlightsByRouteAsync(int originAirportId, int destinationAirportId, DateTime? date = null)
+        {
+            var flights = await _unitOfWork.Flights.GetFlightsByRouteAsync(originAirportId, destinationAirportId, date);
+
+            if (!flights.Any())
+            {
+                throw new NotFoundException(nameof(GetFlightsByRouteAsync), $"No flights found for route {originAirportId} -> {destinationAirportId}");
+            }
+
+            return _mapper.Map<IEnumerable<FlightReadDto>>(flights);
+        }
+    }
+}

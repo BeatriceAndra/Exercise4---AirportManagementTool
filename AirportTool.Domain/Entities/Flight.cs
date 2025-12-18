@@ -9,11 +9,7 @@
         public int DestinationAirportId { get; set; }
         public int? DefaultAircraftId { get; set; }
         public bool IsActive { get; set; } = true;
-
-        public void ValidateRoute()
-        {
-            if (OriginAirportId == DestinationAirportId)
-                throw new InvalidOperationException("Origin and destination cannot be the same.");
-        }
+        public IReadOnlyCollection<FlightSchedule> Schedules { get; set; }
+            = new List<FlightSchedule>();
     }
 }

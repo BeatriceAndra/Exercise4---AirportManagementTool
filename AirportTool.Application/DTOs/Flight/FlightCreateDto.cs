@@ -1,7 +1,7 @@
 ﻿
 namespace AirportTool.Application.DTOs.Flight
 {
-    public class FlightCreateDtocs
+    public class FlightCreateDto
     {
         public string AirlineIata { get; set; } = null!;
         public string FlightNumber { get; set; } = null!;
