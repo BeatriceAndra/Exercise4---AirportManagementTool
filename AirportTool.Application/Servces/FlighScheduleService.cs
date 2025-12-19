@@ -13,11 +13,13 @@ namespace AirportTool.Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IFlightScheduleImportParser _importParser;
 
-        public FlightScheduleService(IUnitOfWork unitOfWork, IMapper mapper)
+        public FlightScheduleService(IUnitOfWork unitOfWork, IMapper mapper, IFlightScheduleImportParser importParser)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _importParser = importParser;
         }
 
         public async Task<FlightScheduleReadDto?> GetScheduleByIdAsync(int scheduleId, CancellationToken cancellationToken = default)
@@ -47,36 +49,14 @@ namespace AirportTool.Infrastructure.Services
 
         public async Task<ImportResultDto> ImportSchedulesFromFileAsync(IFormFile file)
         {
-            if (file == null || file.Length == 0)
-            {
-                throw new BadRequestException("Invalid file");
-            }
-
-            if (!file.FileName.EndsWith(".json"))
-            {
-                throw new BadRequestException("Only JSON files are allowed");
-            }
-
-            List<FlightScheduleImportRowDto>? rows;
-
-            using (var stream = file.OpenReadStream())
-            {
-                rows = await JsonSerializer.DeserializeAsync<List<FlightScheduleImportRowDto>>(
-                    stream,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
-
-            if (rows == null || rows.Count == 0)
-            {
-                throw new BadRequestException("File is empty or invalid JSON");
-            }
+            var rows = await _importParser.ParseAsync(file);
 
             var result = new ImportResultDto
             {
                 Total = rows.Count
             };
 
-            int rowIndex = 0;
+            var rowIndex = 0;
 
             foreach (var row in rows)
             {
@@ -85,21 +65,18 @@ namespace AirportTool.Infrastructure.Services
                 try
                 {
                     var originAirport = await _unitOfWork.Airports.GetByIataCodeAsync(row.OriginIata);
+
                     var destinationAirport = await _unitOfWork.Airports.GetByIataCodeAsync(row.DestinationIata);
 
                     if (originAirport == null || destinationAirport == null)
-                    {
-                        throw new Exception("Invalid airport IATA");
-                    }
+                        throw new Exception("Invalid airport IATA code");
 
                     var flights = await _unitOfWork.Flights.GetFlightsByRouteAsync(originAirport.Id, destinationAirport.Id, null);
 
                     var flight = flights.FirstOrDefault(f => f.FlightNumber == row.FlightNumber);
 
                     if (flight == null)
-                    {
                         throw new Exception("Flight not found");
-                    }
 
                     var existingSchedule = await _unitOfWork.FlightSchedules.GetByFlightAndDepartureAsync(flight.Id, row.ScheduledDepartureUtc);
 
@@ -119,6 +96,7 @@ namespace AirportTool.Infrastructure.Services
                     else
                     {
                         existingSchedule.ScheduledArrivalUtc = row.ScheduledArrivalUtc;
+
                         result.Updated++;
                     }
                 }
@@ -136,6 +114,7 @@ namespace AirportTool.Infrastructure.Services
 
             return result;
         }
+
 
     }
 }

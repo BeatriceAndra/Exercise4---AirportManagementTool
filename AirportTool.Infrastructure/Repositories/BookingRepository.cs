@@ -13,45 +13,27 @@ namespace AirportTool.Infrastructure.Repositories
         private readonly AirportManagementContext _context;
         private readonly IMapper _mapper;
 
-        public BookingRepository(
-            AirportManagementContext context,
-            IMapper mapper)
-            : base(context, mapper)
+        public BookingRepository(AirportManagementContext context, IMapper mapper) : base(context, mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<Booking?> GetBookingByConfirmationCodeAsync(
-            string confirmationCode,
-            CancellationToken cancellationToken = default)
+        public async Task<Booking?> GetBookingByConfirmationCodeAsync(string confirmationCode, CancellationToken cancellationToken = default)
         {
-            var bookingDb = await _context.Bookings
-                .AsNoTracking()
-                .FirstOrDefaultAsync(
-                    b => b.ConfirmationCode == confirmationCode,
-                    cancellationToken);
+            var bookingDb = await _context.Bookings.AsNoTracking().FirstOrDefaultAsync(b => b.ConfirmationCode == confirmationCode, cancellationToken);
 
             if (bookingDb == null)
             {
-                throw new NotFoundException(
-                    nameof(Booking),
-                    confirmationCode);
+                throw new NotFoundException(nameof(Booking), confirmationCode);
             }
 
             return _mapper.Map<Booking>(bookingDb);
         }
 
-        public async Task<IEnumerable<Booking>> GetBookingsForFlightScheduleAsync(
-            int flightScheduleId,
-            CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Booking>> GetBookingsForFlightScheduleAsync(int flightScheduleId, CancellationToken cancellationToken = default)
         {
-            var bookingsDb = await _context.Bookings
-                .AsNoTracking()
-                .Where(b =>
-                    b.Tickets.Any(t =>
-                        t.FlightScheduleId == flightScheduleId))
-                .ToListAsync(cancellationToken);
+            var bookingsDb = await _context.Bookings.AsNoTracking().Where(b => b.Tickets.Any(t => t.FlightScheduleId == flightScheduleId)).ToListAsync(cancellationToken);
 
             return _mapper.Map<IEnumerable<Booking>>(bookingsDb);
         }

@@ -13,9 +13,7 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<IEnumerable<FlightSchedule>> GetSchedulesByFlightAsync(int flightId, CancellationToken cancellationToken = default)
         {
-            return await _dbSet
-                .Where(fs => fs.FlightId == flightId)
-                .ToListAsync(cancellationToken);
+            return await _dbSet.Where(fs => fs.FlightId == flightId).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<FlightSchedule>> GetUpcomingSchedulesAsync(int days, CancellationToken cancellationToken = default)
@@ -23,23 +21,17 @@ namespace AirportTool.Infrastructure.Repositories
             var now = DateTime.UtcNow;
             var endDate = now.AddDays(days);
 
-            return await _dbSet
-                .Where(fs => fs.ScheduledDepartureUtc >= now && fs.ScheduledDepartureUtc <= endDate)
-                .ToListAsync(cancellationToken);
+            return await _dbSet.Where(fs => fs.ScheduledDepartureUtc >= now && fs.ScheduledDepartureUtc <= endDate).ToListAsync(cancellationToken);
         }
 
         public async Task<bool> CheckGateOverlapAsync(int gateId, DateTime departure, DateTime arrival, int? ignoreScheduleId = null, CancellationToken cancellationToken = default)
         {
-            var query = _dbSet.AsQueryable()
-                .Where(fs => fs.GateId == gateId);
+            var query = _dbSet.AsQueryable().Where(fs => fs.GateId == gateId);
 
             if (ignoreScheduleId.HasValue)
                 query = query.Where(fs => fs.Id != ignoreScheduleId.Value);
 
-            return await query.AnyAsync(fs =>
-                fs.ScheduledDepartureUtc < arrival &&
-                fs.ScheduledArrivalUtc > departure,
-                cancellationToken);
+            return await query.AnyAsync(fs => fs.ScheduledDepartureUtc < arrival && fs.ScheduledArrivalUtc > departure, cancellationToken);
         }
         public async Task<FlightSchedule?> GetByFlightAndDepartureAsync(int flightId, DateTime scheduledDepartureUtc, CancellationToken cancellationToken = default)
         {

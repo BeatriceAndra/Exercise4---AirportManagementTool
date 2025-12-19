@@ -1,6 +1,8 @@
 ﻿using AirportTool.Application.DTOs.Booking;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Interfaces.ServiceInterfaces;
+using AirportTool.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirportTool.WebApi.Controllers
@@ -18,6 +20,7 @@ namespace AirportTool.WebApi.Controllers
 
         // POST: api/bookings
         [HttpPost]
+        [Authorize(Roles = Roles.Client)]
         public async Task<ActionResult<BookingReadDto>> CreateBooking([FromBody] BookingCreateDto dto)
         {
             int userId = 1;
@@ -29,6 +32,7 @@ namespace AirportTool.WebApi.Controllers
 
         // GET: api/bookings/{code}
         [HttpGet("{code}")]
+        [Authorize(Roles = Roles.Staff)]
         public async Task<ActionResult<BookingReadDto>> GetBooking(string code)
         {
             try
@@ -44,6 +48,7 @@ namespace AirportTool.WebApi.Controllers
 
         // DELETE: api/bookings/{code}
         [HttpDelete("{code}")]
+        [Authorize(Roles = Roles.Staff)]
         public async Task<IActionResult> CancelBooking(string code)
         {
             try

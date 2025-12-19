@@ -23,8 +23,7 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<Airport?> GetByIataCodeAsync(string iataCode, CancellationToken cancellationToken = default)
         {
-            var airportDb = await _context.Airports
-                .FirstOrDefaultAsync(a => a.IATACode == iataCode, cancellationToken);
+            var airportDb = await _context.Airports.FirstOrDefaultAsync(a => a.IATACode == iataCode, cancellationToken);
 
             if (airportDb == null)
                 return null;

@@ -1,5 +1,7 @@
 ﻿using AirportTool.Application.DTOs.FlightSchedule;
 using AirportTool.Application.Interfaces.ServiceInterfaces;
+using AirportTool.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +20,7 @@ namespace AirportManagement.WebApi.Controllers
 
         // GET /api/schedules/{id} -> schedule with gate, aircraft, status
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<FlightScheduleReadDto>> GetById(int id)
         {
             var schedule = await _flightScheduleService.GetScheduleByIdAsync(id);
@@ -29,6 +32,7 @@ namespace AirportManagement.WebApi.Controllers
 
         // GET /api/schedules/stats/upcoming -> flights for next 7 days
         [HttpGet("stats/upcoming")]
+        [Authorize(Roles = Roles.Staff)]
         public async Task<ActionResult> GetUpcomingStats()
         {
             var stats = await _flightScheduleService.GetUpcomingSchedulesAsync();
@@ -37,15 +41,19 @@ namespace AirportManagement.WebApi.Controllers
 
         // POST /api/schedules -> create one schedule (Planned)
         [HttpPost]
+        [Authorize(Roles = Roles.Staff)]
         public async Task<ActionResult<FlightScheduleReadDto>> Create([FromBody] FlightScheduleCreateDto dto)
         {
             var schedule = await _flightScheduleService.CreateScheduleAsync(dto);
+            if (schedule == null)
+                return NotFound();
             return CreatedAtAction(nameof(GetById), new { id = schedule.Id }, schedule);
         }
 
         // POST /api/schedules/import -> JSON file import
         [HttpPost("import")]
         [Consumes("multipart/form-data")]
+        [Authorize(Roles = Roles.Staff)]
         public async Task<ActionResult> Import([FromForm] IFormFile file)
         {
             if (file == null || file.Length == 0)

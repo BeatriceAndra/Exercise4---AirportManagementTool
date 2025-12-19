@@ -1,5 +1,7 @@
 ﻿using AirportTool.Application.DTOs.Flight;
 using AirportTool.Application.Interfaces.ServiceInterfaces;
+using AirportTool.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,7 @@ namespace AirportManagement.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = Roles.Staff)]
     public class FlightsController : ControllerBase
     {
         private readonly IFlightService _flightService;

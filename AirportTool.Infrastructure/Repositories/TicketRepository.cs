@@ -20,23 +20,24 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<IEnumerable<Ticket>> GetByFlightScheduleAsync(int flightScheduleId, CancellationToken cancellationToken = default)
         {
-            var tickets = await _context.Tickets
-                .Where(t => t.FlightScheduleId == flightScheduleId)
-                .ToListAsync(cancellationToken);
+            var tickets = await _context.Tickets.Where(t => t.FlightScheduleId == flightScheduleId).ToListAsync(cancellationToken);
 
             return _mapper.Map<IEnumerable<Ticket>>(tickets);
         }
 
         public async Task<int> GetSoldTicketsCountAsync(int flightScheduleId, CancellationToken cancellationToken = default)
         {
-            return await _context.Tickets
-                .CountAsync(t => t.FlightScheduleId == flightScheduleId, cancellationToken);
+            return await _context.Tickets.CountAsync(t => t.FlightScheduleId == flightScheduleId, cancellationToken);
         }
         public async Task<IEnumerable<Ticket>> GetTicketsByFlightAsync(int flightId, CancellationToken cancellationToken = default)
         {
-            var tickets = await _context.Tickets
-                .Where(t => t.FlightSchedule.FlightId == flightId)
-                .ToListAsync(cancellationToken);
+            var tickets = await _context.Tickets.Where(t => t.FlightSchedule.FlightId == flightId).ToListAsync(cancellationToken);
+
+            return _mapper.Map<IEnumerable<Ticket>>(tickets);
+        }
+        public async Task<IEnumerable<Ticket>> GetTicketsByBookingAsync(int bookingId, CancellationToken cancellationToken = default)
+        {
+            var tickets = await _context.Tickets.Where(t => t.BookingId == bookingId).ToListAsync(cancellationToken);
 
             return _mapper.Map<IEnumerable<Ticket>>(tickets);
         }

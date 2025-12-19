@@ -48,9 +48,7 @@ namespace AirportTool.Infrastructure.Repositories
 
         public virtual async Task<List<TResult>> GetAllAsync<TResult>()
         {
-            return await _dbSet
-                .ProjectTo<TResult>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            return await _dbSet.ProjectTo<TResult>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         // --- Add ---
@@ -107,9 +105,7 @@ namespace AirportTool.Infrastructure.Repositories
 
         public virtual async Task<List<TResult>> FindAsync<TResult>(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate)
         {
-            return await _dbSet.Where(predicate)
-                .ProjectTo<TResult>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            return await _dbSet.Where(predicate).ProjectTo<TResult>(_mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }
