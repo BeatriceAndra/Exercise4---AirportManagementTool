@@ -1,13 +1,10 @@
-﻿using AirportManagement.WebApi.Models;
-using AirportTool.Application.Interfaces.Repositories;
-using AirportTool.Domain.Entities;
+﻿using AirportTool.Application.Interfaces.Repositories;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Flight = AirportTool.Domain.Entities.Flight;
 
 namespace AirportTool.Infrastructure.Repositories
 {
-    public class FlightRepository : Repository<Flight>, IFlightRepository
+    public class FlightRepository : Repository<Domain.Entities.Flight>, IFlightRepository
     {
         private readonly AirportManagementContext _context;
         private readonly IMapper _mapper;
@@ -18,14 +15,14 @@ namespace AirportTool.Infrastructure.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Flight?> GetFlightWithSchedulesAsync(int flightId, CancellationToken cancellationToken = default)
+        public async Task<Domain.Entities.Flight?> GetFlightWithSchedulesAsync(int flightId)
         {
-            var flightEf = await _context.Flights.Include(f => f.FlightSchedules).FirstOrDefaultAsync(f => f.Id == flightId, cancellationToken);
+            var flightEf = await _context.Flights.Include(f => f.FlightSchedules).FirstOrDefaultAsync(f => f.Id == flightId);
 
-            return flightEf == null ? null : _mapper.Map<Flight>(flightEf);
+            return flightEf == null ? null : _mapper.Map<Domain.Entities.Flight>(flightEf);
         }
 
-        public async Task<IEnumerable<Flight>> GetFlightsByRouteAsync(int originAirportId, int destinationAirportId, DateTime? date = null, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Domain.Entities.Flight>> GetFlightsByRouteAsync(int originAirportId, int destinationAirportId, DateTime? date = null)
         {
             var query = _context.Flights.Include(f => f.FlightSchedules).Where(f => f.OriginAirportId == originAirportId && f.DestinationAirportId == destinationAirportId);
 
@@ -34,9 +31,9 @@ namespace AirportTool.Infrastructure.Repositories
                 query = query.Where(f => f.FlightSchedules.Any(fs => fs.ScheduledDepartureUtc.Date == date.Value.Date));
             }
 
-            var flightsEf = await query.ToListAsync(cancellationToken);
+            var flightsEf = await query.ToListAsync();
 
-            return _mapper.Map<IEnumerable<Flight>>(flightsEf);
+            return _mapper.Map<IEnumerable<Domain.Entities.Flight>>(flightsEf);
         }
     }
 }

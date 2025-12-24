@@ -11,6 +11,9 @@ namespace AirportTool.Application.Interfaces
         ITicketRepository Tickets { get; }
         IBookingRepository Bookings { get; }
         IAirportRepository Airports { get; }
+        IGateRepository Gates { get; }
+        IAircraftRepository Aircrafts { get; }
+
 
         Task<int> CompleteAsync();
     }

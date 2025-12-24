@@ -42,6 +42,9 @@ namespace AirportManagement.WebApi.Middleware
                 case BadRequestException:
                     status = HttpStatusCode.BadRequest;
                     break;
+                case GateOverlapException:
+                    status = HttpStatusCode.Conflict;
+                    break;
                 default:
                     status = HttpStatusCode.InternalServerError;
                     _logger.LogError(exception, "Unhandled exception occurred.");

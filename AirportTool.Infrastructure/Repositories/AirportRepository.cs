@@ -1,15 +1,10 @@
-﻿using AirportManagement.WebApi.Models;
-using AirportTool.Application.Interfaces.Repositories;
-using AirportTool.Application.Interfaces.Repository;
-using AirportTool.Domain.Entities;
+﻿using AirportTool.Application.Interfaces.Repository;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Airport = AirportTool.Domain.Entities.Airport;
 
 namespace AirportTool.Infrastructure.Repositories
 {
-    public class AirportRepository : Repository<Airport>, IAirportRepository
+    public class AirportRepository : Repository<Domain.Entities.Airport>, IAirportRepository
     {
         private readonly AirportManagementContext _context;
         private readonly IMapper _mapper;
@@ -21,14 +16,14 @@ namespace AirportTool.Infrastructure.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Airport?> GetByIataCodeAsync(string iataCode, CancellationToken cancellationToken = default)
+        public async Task<Domain.Entities.Airport?> GetByIataCodeAsync(string iataCode)
         {
-            var airportDb = await _context.Airports.FirstOrDefaultAsync(a => a.IATACode == iataCode, cancellationToken);
+            var airportDb = await _context.Airports.FirstOrDefaultAsync(a => a.IATACode == iataCode);
 
             if (airportDb == null)
                 return null;
 
-            return _mapper.Map<Airport>(airportDb);
+            return _mapper.Map<Domain.Entities.Airport>(airportDb);
         }
     }
 }

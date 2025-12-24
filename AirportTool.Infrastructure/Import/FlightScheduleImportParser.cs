@@ -5,7 +5,7 @@ using System.Text.Json;
 
 public class FlightScheduleImportParser : IFlightScheduleImportParser
 {
-    public async Task<IReadOnlyList<FlightScheduleImportRowDto>> ParseAsync(IFormFile file, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<FlightScheduleImportRowDto>> ParseAsync(IFormFile file)
     {
         using var stream = file.OpenReadStream();
 
@@ -13,8 +13,8 @@ public class FlightScheduleImportParser : IFlightScheduleImportParser
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
-            },
-            cancellationToken);
+            }
+            );
 
         if (rows == null || rows.Count == 0)
             throw new BadRequestException("Import file is empty or invalid.");

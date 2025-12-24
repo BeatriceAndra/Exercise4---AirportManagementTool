@@ -2,7 +2,6 @@
 using AirportTool.Application.Interfaces.ServiceInterfaces;
 using AirportTool.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirportManagement.WebApi.Controllers
@@ -54,18 +53,21 @@ namespace AirportManagement.WebApi.Controllers
         [HttpPost("import")]
         [Consumes("multipart/form-data")]
         [Authorize(Roles = Roles.Staff)]
-        public async Task<ActionResult> Import([FromForm] IFormFile file)
+        public async Task<IActionResult> Import([FromForm] UploadFileDto dto)
         {
-            if (file == null || file.Length == 0)
+            if (dto.File == null || dto.File.Length == 0)
                 return BadRequest("No file provided.");
 
-            var result = await _flightScheduleService.ImportSchedulesFromFileAsync(file);
+            var result = await _flightScheduleService.ImportSchedulesFromFileAsync(dto.File);
 
             if (result.Errors.Any())
                 return StatusCode(207, result);
+
             if (result.Created + result.Updated == result.Total)
                 return Created("", result);
+
             return BadRequest(result);
         }
     }
 }
+

@@ -23,7 +23,7 @@ namespace AirportManagement.WebApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<TicketReadDto>>> GetTicketsByFlight(int flightId)
         {
-            var tickets = await _ticketService.GetTicketsByFlightAsync(flightId);
+            var tickets = await _ticketService.GetTicketsByFlightScheduleIdAsync(flightId);
             return Ok(tickets);
         }
 

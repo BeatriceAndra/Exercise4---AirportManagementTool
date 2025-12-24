@@ -2,7 +2,6 @@
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Interfaces.Service;
 using AirportTool.Domain.Entities;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -16,7 +15,7 @@ namespace AirportTool.Application.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApiUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Microsoft.AspNetCore.Identity.IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
         public AuthService(UserManager<ApiUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
@@ -42,10 +41,9 @@ namespace AirportTool.Application.Services
             if (!result.Succeeded)
                 throw new BadRequestException(string.Join(", ", result.Errors.Select(e => e.Description)));
 
-            // Adaugam rolul
             if (!await _roleManager.RoleExistsAsync(dto.Role))
             {
-                await _roleManager.CreateAsync(new IdentityRole(dto.Role));
+                await _roleManager.CreateAsync(new Microsoft.AspNetCore.Identity.IdentityRole(dto.Role));
             }
             await _userManager.AddToRoleAsync(user, dto.Role);
 
@@ -94,7 +92,6 @@ namespace AirportTool.Application.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            // adaugam rolurile
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
             var token = new JwtSecurityToken(

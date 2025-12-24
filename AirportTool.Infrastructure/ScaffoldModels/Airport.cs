@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AirportManagement.WebApi.Models;
-
+﻿namespace AirportTool.Infrastructure;
 public partial class Airport
 {
     public int Id { get; set; }

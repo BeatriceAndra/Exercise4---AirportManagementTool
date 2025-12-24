@@ -1,5 +1,4 @@
-﻿using AirportManagement.WebApi.Models;
-using AirportTool.Application.Interfaces;
+﻿using AirportTool.Application.Interfaces;
 using AirportTool.Application.Interfaces.Repositories;
 using AirportTool.Application.Interfaces.Repository;
 
@@ -14,6 +13,8 @@ namespace AirportTool.Infrastructure.Repositories
         public ITicketRepository Tickets { get; }
         public IBookingRepository Bookings { get; }
         public IAirportRepository Airports { get; private set; }
+        public IGateRepository Gates { get; }
+        public IAircraftRepository Aircrafts { get; }
 
 
         public UnitOfWork(
@@ -22,7 +23,9 @@ namespace AirportTool.Infrastructure.Repositories
             IFlightScheduleRepository flightSchedules,
             ITicketRepository tickets,
             IBookingRepository bookings,
-            IAirportRepository airports)
+            IAirportRepository airports,
+            IGateRepository gates,
+            IAircraftRepository aircrafts)
         {
             _context = context;
             Flights = flights;
@@ -30,6 +33,8 @@ namespace AirportTool.Infrastructure.Repositories
             Tickets = tickets;
             Bookings = bookings;
             Airports = airports;
+            Gates = gates;
+            Aircrafts = aircrafts;
         }
 
         public async Task<int> CompleteAsync()

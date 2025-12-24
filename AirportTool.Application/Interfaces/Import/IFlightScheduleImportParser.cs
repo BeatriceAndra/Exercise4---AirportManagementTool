@@ -3,5 +3,5 @@ using Microsoft.AspNetCore.Http;
 
 public interface IFlightScheduleImportParser
 {
-    Task<IReadOnlyList<FlightScheduleImportRowDto>> ParseAsync(IFormFile file, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<FlightScheduleImportRowDto>> ParseAsync(IFormFile file);
 }

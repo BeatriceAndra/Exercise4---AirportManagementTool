@@ -5,8 +5,8 @@ namespace AirportTool.Application.Interfaces.Repository
 {
     public interface IBookingRepository : IRepository<Booking>
     {
-        Task<Booking?> GetBookingByConfirmationCodeAsync(string confirmationCode, CancellationToken cancellationToken = default);
+        Task<Booking?> GetBookingByConfirmationCodeAsync(string confirmationCode);
 
-        Task<IEnumerable<Booking>> GetBookingsForFlightScheduleAsync(int flightScheduleId, CancellationToken cancellationToken = default);
+        Task<IEnumerable<Booking>> GetBookingsForFlightScheduleAsync(int flightScheduleId);
     }
 }

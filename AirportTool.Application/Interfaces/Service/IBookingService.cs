@@ -9,8 +9,8 @@ namespace AirportTool.Application.Interfaces.ServiceInterfaces
 {
     public interface IBookingService
     {
-        Task<BookingReadDto> CreateBookingAsync(BookingCreateDto dto, int userId, CancellationToken cancellationToken = default);
-        Task<BookingReadDto> GetByConfirmationCodeAsync(string confirmationCode, CancellationToken cancellationToken = default);
-        Task CancelBookingAsync(string confirmationCode, CancellationToken cancellationToken = default);
+        Task<BookingReadDto> CreateBookingAsync(BookingCreateDto dto, int userId);
+        Task<BookingReadDto> GetByConfirmationCodeAsync(string confirmationCode);
+        Task CancelBookingAsync(string confirmationCode);
     }
 }
