@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace AirportTool.Application.Interfaces.Repositories
+namespace AirportTool.Application.Interfaces.Repository
 {
     public interface IRepository<T> where T : class
     {

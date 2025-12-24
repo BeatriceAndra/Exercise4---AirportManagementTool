@@ -1,8 +1,8 @@
-﻿using AirportTool.Application.Interfaces.Repositories;
+﻿using AirportTool.Application.Interfaces.Repository;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirportTool.Infrastructure.Repositories
+namespace AirportTool.Infrastructure.Repository
 {
     public class FlightRepository : Repository<Domain.Entities.Flight>, IFlightRepository
     {
@@ -17,18 +17,18 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<Domain.Entities.Flight?> GetFlightWithSchedulesAsync(int flightId)
         {
-            var flightEf = await _context.Flights.Include(f => f.FlightSchedules).FirstOrDefaultAsync(f => f.Id == flightId);
+            var flightEf = await _context.Flight.Include(f => f.Schedules).FirstOrDefaultAsync(f => f.Id == flightId);
 
             return flightEf == null ? null : _mapper.Map<Domain.Entities.Flight>(flightEf);
         }
 
         public async Task<IEnumerable<Domain.Entities.Flight>> GetFlightsByRouteAsync(int originAirportId, int destinationAirportId, DateTime? date = null)
         {
-            var query = _context.Flights.Include(f => f.FlightSchedules).Where(f => f.OriginAirportId == originAirportId && f.DestinationAirportId == destinationAirportId);
+            var query = _context.Flight.Include(f => f.Schedules).Where(f => f.OriginAirportId == originAirportId && f.DestinationAirportId == destinationAirportId);
 
             if (date.HasValue)
             {
-                query = query.Where(f => f.FlightSchedules.Any(fs => fs.ScheduledDepartureUtc.Date == date.Value.Date));
+                query = query.Where(f => f.Schedules.Any(fs => fs.ScheduledDepartureUtc.Date == date.Value.Date));
             }
 
             var flightsEf = await query.ToListAsync();

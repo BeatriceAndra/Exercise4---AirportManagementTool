@@ -1,8 +1,7 @@
 ﻿using AirportTool.Application.Interfaces;
-using AirportTool.Application.Interfaces.Repositories;
 using AirportTool.Application.Interfaces.Repository;
 
-namespace AirportTool.Infrastructure.Repositories
+namespace AirportTool.Infrastructure.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -12,7 +11,7 @@ namespace AirportTool.Infrastructure.Repositories
         public IFlightScheduleRepository FlightSchedules { get; }
         public ITicketRepository Tickets { get; }
         public IBookingRepository Bookings { get; }
-        public IAirportRepository Airports { get; private set; }
+        public IAirportRepository Airports { get; }
         public IGateRepository Gates { get; }
         public IAircraftRepository Aircrafts { get; }
 

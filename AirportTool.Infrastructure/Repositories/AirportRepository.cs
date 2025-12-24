@@ -2,7 +2,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirportTool.Infrastructure.Repositories
+namespace AirportTool.Infrastructure.Repository
 {
     public class AirportRepository : Repository<Domain.Entities.Airport>, IAirportRepository
     {
@@ -18,7 +18,7 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<Domain.Entities.Airport?> GetByIataCodeAsync(string iataCode)
         {
-            var airportDb = await _context.Airports.FirstOrDefaultAsync(a => a.IATACode == iataCode);
+            var airportDb = await _context.Airport.FirstOrDefaultAsync(a => a.IATACode == iataCode);
 
             if (airportDb == null)
                 return null;

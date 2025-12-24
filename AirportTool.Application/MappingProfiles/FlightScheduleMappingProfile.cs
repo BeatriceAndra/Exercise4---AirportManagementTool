@@ -1,5 +1,6 @@
 ﻿using AirportTool.Application.DTOs.FlightSchedule;
 using AirportTool.Domain.Entities;
+using AirportTool.Domain.Enums;
 using AutoMapper;
 
 namespace AirportTool.Application.MappingProfiles;
@@ -10,6 +11,8 @@ public class FlightScheduleMappingProfile : Profile
     {
         // FlightSchedule -> FlightScheduleReadDto
         CreateMap<FlightSchedule, FlightScheduleReadDto>()
+            .ForMember(d => d.Status,
+                o => o.MapFrom(s => ((FlightStatus)s.FlightStatusId).ToString()))
             .ForMember(d => d.GateCode, o => o.Ignore())
             .ForMember(d => d.AssignedAircraftTail, o => o.Ignore())
             .ForMember(d => d.FlightNumber, o => o.Ignore())

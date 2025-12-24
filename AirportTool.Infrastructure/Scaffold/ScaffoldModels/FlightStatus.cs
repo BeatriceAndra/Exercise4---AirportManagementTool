@@ -1,4 +1,4 @@
-﻿namespace AirportTool.Infrastructure;
+﻿namespace AirportTool.Infrastructure.Scaffold.ScaffoldModels;
 
 public partial class FlightStatus
 {

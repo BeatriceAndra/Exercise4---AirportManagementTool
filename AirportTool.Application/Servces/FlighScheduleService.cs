@@ -6,9 +6,6 @@ using AirportTool.Domain.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AirportTool.Infrastructure.Services
 {
@@ -18,6 +15,7 @@ namespace AirportTool.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IFlightScheduleImportParser _importParser;
         private readonly ILogger<FlightScheduleService> _logger;
+
 
         public FlightScheduleService(IUnitOfWork unitOfWork, IMapper mapper, IFlightScheduleImportParser importParser, ILogger<FlightScheduleService> logger)
         {
@@ -33,7 +31,6 @@ namespace AirportTool.Infrastructure.Services
             var schedule = await _unitOfWork.FlightSchedules.GetByIdAsync(scheduleId);
             if (schedule == null)
                 throw new NotFoundException(nameof(FlightSchedule), scheduleId);
-
             return _mapper.Map<FlightScheduleReadDto>(schedule);
 
         }

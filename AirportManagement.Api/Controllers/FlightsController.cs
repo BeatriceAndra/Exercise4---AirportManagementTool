@@ -9,7 +9,7 @@ namespace AirportManagement.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = Roles.Staff)]
+    //[Authorize(Roles = Roles.Staff)]
     public class FlightsController : ControllerBase
     {
         private readonly IFlightService _flightService;

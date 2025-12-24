@@ -1,4 +1,4 @@
-﻿using AirportTool.Application.Interfaces.Repositories;
+﻿using AirportTool.Application.Interfaces.Repository;
 using AirportTool.Domain.Entities;
 
 namespace AirportTool.Application.Interfaces.Repository

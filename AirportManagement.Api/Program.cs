@@ -1,17 +1,19 @@
 using AirportManagement.WebApi.Middleware;
+using AirportTool.Application.DTOs.FlightSchedule;
 using AirportTool.Application.Interfaces;
-using AirportTool.Application.Interfaces.Repositories;
 using AirportTool.Application.Interfaces.Repository;
 using AirportTool.Application.Interfaces.Service;
 using AirportTool.Application.Interfaces.ServiceInterfaces;
+using AirportTool.Application.MappingProfiles;
 using AirportTool.Application.Services;
 using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure;
-using AirportTool.Infrastructure.Repositories;
+using AirportTool.Infrastructure.Repository;
 using AirportTool.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 
@@ -26,6 +28,8 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IGateRepository, GateRepository>();
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IFlightService, FlightService>();
@@ -72,6 +76,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
+
 builder.Services.AddIdentity<ApiUser, IdentityRole>().AddEntityFrameworkStores<AirportManagementContext>().AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>

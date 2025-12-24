@@ -20,7 +20,7 @@ namespace AirportManagement.WebApi.Controllers
 
         // GET /api/tickets/by-flight/{flightId}
         [HttpGet("by-flight/{flightId}")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult<IEnumerable<TicketReadDto>>> GetTicketsByFlight(int flightId)
         {
             var tickets = await _ticketService.GetTicketsByFlightScheduleIdAsync(flightId);
@@ -29,7 +29,7 @@ namespace AirportManagement.WebApi.Controllers
 
         // POST /api/tickets
         [HttpPost]
-        [Authorize(Roles = Roles.Staff)]
+        //[Authorize(Roles = Roles.Staff)]
         public async Task<ActionResult<TicketReadDto>> CreateTicket([FromBody] TicketCreateDto dto)
         {
             var ticket = await _ticketService.CreateTicketAsync(dto);
@@ -38,7 +38,7 @@ namespace AirportManagement.WebApi.Controllers
 
         // DELETE /api/tickets/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = Roles.Staff)]
+        //[Authorize(Roles = Roles.Staff)]
         public async Task<IActionResult> DeleteTicket(int id)
         {
             await _ticketService.DeleteTicketAsync(id);

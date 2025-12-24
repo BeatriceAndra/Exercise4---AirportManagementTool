@@ -1,10 +1,11 @@
-﻿using AutoMapper;
+﻿using AirportTool.Application.Interfaces.Repository;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirportTool.Infrastructure.Repositories
+namespace AirportTool.Infrastructure.Repository
 {
-    public class Repository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly AirportManagementContext _context;
         protected readonly IMapper _mapper;
@@ -15,11 +16,6 @@ namespace AirportTool.Infrastructure.Repositories
             _context = context;
             _mapper = mapper;
             _dbSet = _context.Set<T>();
-        }
-
-        public Repository(AirportManagementContext context)
-        {
-            _context = context;
         }
 
         // --- Get by Id ---

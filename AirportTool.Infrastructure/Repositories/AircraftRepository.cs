@@ -1,10 +1,12 @@
 ﻿using AirportTool.Application.Interfaces.Repository;
+using AutoMapper;
 
-namespace AirportTool.Infrastructure.Repositories
+namespace AirportTool.Infrastructure.Repository
 {
     public class AircraftRepository : Repository<Domain.Entities.Aircraft>, IAircraftRepository
     {
-        public AircraftRepository(AirportManagementContext context) : base(context)
+        private static IMapper mapper;
+        public AircraftRepository(AirportManagementContext context) : base(context, mapper)
         {
         }
     }

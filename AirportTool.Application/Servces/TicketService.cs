@@ -1,7 +1,6 @@
 ﻿using AirportTool.Application.DTOs.Ticket;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Interfaces;
-using AirportTool.Application.Interfaces.Repositories;
 using AirportTool.Application.Interfaces.ServiceInterfaces;
 using AirportTool.Domain.Entities;
 using AutoMapper;

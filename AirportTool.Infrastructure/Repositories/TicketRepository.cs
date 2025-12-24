@@ -1,8 +1,8 @@
-﻿using AirportTool.Application.Interfaces.Repositories;
+﻿using AirportTool.Application.Interfaces.Repository;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirportTool.Infrastructure.Repositories
+namespace AirportTool.Infrastructure.Repository
 {
     public class TicketRepository : Repository<Domain.Entities.Ticket>, ITicketRepository
     {
@@ -17,24 +17,24 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<IEnumerable<Domain.Entities.Ticket>> GetByFlightScheduleAsync(int flightScheduleId)
         {
-            var tickets = await _context.Tickets.Where(t => t.FlightScheduleId == flightScheduleId).ToListAsync();
+            var tickets = await _context.Ticket.Where(t => t.FlightScheduleId == flightScheduleId).ToListAsync();
 
             return _mapper.Map<IEnumerable<Domain.Entities.Ticket>>(tickets);
         }
 
         public async Task<int> GetSoldTicketsCountAsync(int flightScheduleId)
         {
-            return await _context.Tickets.CountAsync(t => t.FlightScheduleId == flightScheduleId);
+            return await _context.Ticket.CountAsync(t => t.FlightScheduleId == flightScheduleId);
         }
         public async Task<IEnumerable<Domain.Entities.Ticket>> GetTicketsByFlightAsync(int flightId)
         {
-            var tickets = await _context.Tickets.Where(t => t.FlightSchedule.FlightId == flightId).ToListAsync();
+            var tickets = await _context.Ticket.Where(t => t.FlightScheduleId == flightId).ToListAsync();
 
             return _mapper.Map<IEnumerable<Domain.Entities.Ticket>>(tickets);
         }
         public async Task<IEnumerable<Domain.Entities.Ticket>> GetTicketsByBookingAsync(int bookingId)
         {
-            var tickets = await _context.Tickets.Where(t => t.BookingId == bookingId).ToListAsync();
+            var tickets = await _context.Ticket.Where(t => t.BookingId == bookingId).ToListAsync();
 
             return _mapper.Map<IEnumerable<Domain.Entities.Ticket>>(tickets);
         }

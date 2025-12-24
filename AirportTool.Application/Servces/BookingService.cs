@@ -1,10 +1,8 @@
 ﻿using AirportTool.Application.DTOs.Booking;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Interfaces;
-using AirportTool.Application.Interfaces.Repositories;
 using AirportTool.Application.Interfaces.ServiceInterfaces;
 using AirportTool.Domain.Entities;
-using AirportTool.Domain.Enums;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 

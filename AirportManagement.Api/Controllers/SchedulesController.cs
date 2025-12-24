@@ -19,7 +19,7 @@ namespace AirportManagement.WebApi.Controllers
 
         // GET /api/schedules/{id} -> schedule with gate, aircraft, status
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult<FlightScheduleReadDto>> GetById(int id)
         {
             var schedule = await _flightScheduleService.GetScheduleByIdAsync(id);
@@ -31,7 +31,7 @@ namespace AirportManagement.WebApi.Controllers
 
         // GET /api/schedules/stats/upcoming -> flights for next 7 days
         [HttpGet("stats/upcoming")]
-        [Authorize(Roles = Roles.Staff)]
+        //[Authorize(Roles = Roles.Staff)]
         public async Task<ActionResult> GetUpcomingStats()
         {
             var stats = await _flightScheduleService.GetUpcomingSchedulesAsync();
@@ -40,7 +40,7 @@ namespace AirportManagement.WebApi.Controllers
 
         // POST /api/schedules -> create one schedule (Planned)
         [HttpPost]
-        [Authorize(Roles = Roles.Staff)]
+        //[Authorize(Roles = Roles.Staff)]
         public async Task<ActionResult<FlightScheduleReadDto>> Create([FromBody] FlightScheduleCreateDto dto)
         {
             var schedule = await _flightScheduleService.CreateScheduleAsync(dto);
@@ -52,7 +52,7 @@ namespace AirportManagement.WebApi.Controllers
         // POST /api/schedules/import -> JSON file import
         [HttpPost("import")]
         [Consumes("multipart/form-data")]
-        [Authorize(Roles = Roles.Staff)]
+        //[Authorize(Roles = Roles.Staff)]
         public async Task<IActionResult> Import([FromForm] UploadFileDto dto)
         {
             if (dto.File == null || dto.File.Length == 0)

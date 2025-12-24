@@ -1,12 +1,17 @@
-﻿using AirportTool.Application.Interfaces.Repositories;
+﻿using AirportTool.Application.Interfaces.Repository;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirportTool.Infrastructure.Repositories
+namespace AirportTool.Infrastructure.Repository
 {
     public class FlightScheduleRepository : Repository<Domain.Entities.FlightSchedule>, IFlightScheduleRepository
     {
-        public FlightScheduleRepository(AirportManagementContext context) : base(context)
+        private readonly AirportManagementContext _context;
+        private readonly IMapper _mapper;
+        public FlightScheduleRepository(AirportManagementContext context, IMapper mapper) : base(context, mapper)
         {
+            _context = context;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<Domain.Entities.FlightSchedule>> GetSchedulesByFlightAsync(int flightId)
@@ -33,12 +38,13 @@ namespace AirportTool.Infrastructure.Repositories
         }
         public async Task<Domain.Entities.FlightSchedule?> GetByFlightAndDepartureAsync(int flightId, DateTime scheduledDepartureUtc)
         {
-            var entity = await _context.FlightSchedules.FirstOrDefaultAsync(fs =>fs.FlightId == flightId && fs.ScheduledDepartureUtc == scheduledDepartureUtc);
+            var entity = await _context.FlightSchedule.FirstOrDefaultAsync(fs =>fs.FlightId == flightId && fs.ScheduledDepartureUtc == scheduledDepartureUtc);
 
             if (entity == null)
                 return null;
 
             return _mapper.Map<Domain.Entities.FlightSchedule>(entity);
         }
+
     }
 }

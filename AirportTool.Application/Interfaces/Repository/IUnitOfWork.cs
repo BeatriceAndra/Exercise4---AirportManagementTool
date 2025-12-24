@@ -1,5 +1,4 @@
 ﻿
-using AirportTool.Application.Interfaces.Repositories;
 using AirportTool.Application.Interfaces.Repository;
 
 namespace AirportTool.Application.Interfaces

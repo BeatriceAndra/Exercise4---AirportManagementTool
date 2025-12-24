@@ -1,13 +1,13 @@
-﻿using AirportTool.Domain.Entities;
+﻿using AirportTool.Infrastructure.Scaffold.ScaffoldModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirportTool.Infrastructure
+namespace AirportTool.Infrastructure.Scaffold.ScaffoldContext
 {
-    public class AirportManagementContext : IdentityDbContext<ApiUser, IdentityRole, string>
+    public class ScaffoldedContext : IdentityDbContext<Domain.Entities.ApiUser, IdentityRole, string>
     {
-        public AirportManagementContext(DbContextOptions<AirportManagementContext> options)
+        public ScaffoldedContext(DbContextOptions<ScaffoldedContext> options)
             : base(options)
         {
         }
@@ -27,7 +27,7 @@ namespace AirportTool.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // obligatoriu pentru Identity
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Address>(entity =>
             {

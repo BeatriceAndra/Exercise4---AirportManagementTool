@@ -1,6 +1,6 @@
 ﻿using AirportTool.Domain.Entities;
 
-namespace AirportTool.Application.Interfaces.Repositories
+namespace AirportTool.Application.Interfaces.Repository
 {
     public interface ITicketRepository : IRepository<Ticket>
     {

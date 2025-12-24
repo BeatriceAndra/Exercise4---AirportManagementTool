@@ -1,8 +1,8 @@
-﻿using AirportTool.Application.Interfaces.Repositories;
+﻿using AirportTool.Application.Interfaces.Repository;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirportTool.Infrastructure.Repositories
+namespace AirportTool.Infrastructure.Repository
 {
     public class GateRepository : Repository<Domain.Entities.Gate>, IGateRepository
     {
@@ -18,14 +18,14 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<Domain.Entities.Gate?> GetByCodeAsync(string gateCode)
         {
-            var gate = await _context.Gates.FirstOrDefaultAsync(g => g.Code == gateCode);
+            var gate = await _context.Gate.FirstOrDefaultAsync(g => g.Code == gateCode);
 
             return gate == null ? null : _mapper.Map<Domain.Entities.Gate>(gate);
         }
 
         public async Task<IEnumerable<Domain.Entities.Gate>> GetAllAsync()
         {
-            var gates = await _context.Gates.ToListAsync();
+            var gates = await _context.Gate.ToListAsync();
 
             return _mapper.Map<IEnumerable<Domain.Entities.Gate>>(gates);
         }

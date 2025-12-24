@@ -20,7 +20,7 @@ namespace AirportTool.WebApi.Controllers
 
         // POST: api/bookings
         [HttpPost]
-        [Authorize(Roles = Roles.Client)]
+        //[Authorize(Roles = Roles.Client)]
         public async Task<ActionResult<BookingReadDto>> CreateBooking([FromBody] BookingCreateDto dto)
         {
             int userId = 1;
@@ -32,7 +32,7 @@ namespace AirportTool.WebApi.Controllers
 
         // GET: api/bookings/{code}
         [HttpGet("{code}")]
-        [Authorize(Roles = Roles.Staff)]
+        //[Authorize(Roles = Roles.Staff)]
         public async Task<ActionResult<BookingReadDto>> GetBooking(string code)
         {
             try
@@ -48,7 +48,7 @@ namespace AirportTool.WebApi.Controllers
 
         // DELETE: api/bookings/{code}
         [HttpDelete("{code}")]
-        [Authorize(Roles = Roles.Staff)]
+        //[Authorize(Roles = Roles.Staff)]
         public async Task<IActionResult> CancelBooking(string code)
         {
             try
