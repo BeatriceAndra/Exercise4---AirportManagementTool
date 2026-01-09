@@ -43,12 +43,7 @@ namespace AirportTool.Application.Services
             if (aircraft == null)
                 throw new NotFoundException("Aircraft", flightSchedule.AssignedAircraftId);
 
-            var capacity = aircraft.SeatCapacity;
-
-            var bookings = await _unitOfWork.Bookings.GetAllAsync();
-            var soldSeats = bookings.Sum(b => b.Quantity);
-
-            var seatsAvailable = capacity - soldSeats;
+            var seatsAvailable = await CalculateSeatsAvailableAsync(flightSchedule.AssignedAircraftId.Value);
 
             var result = _mapper.Map<List<TicketReadDto>>(tickets);
 
@@ -60,6 +55,12 @@ namespace AirportTool.Application.Services
 
         public async Task<TicketReadDto> CreateTicketAsync(TicketCreateDto dto)
         {
+            if (dto.BasePrice < 0)
+                throw new ArgumentException("Base price cannot be negative.");
+
+            if (dto.Taxes < 0)
+                throw new ArgumentException("Taxes cannot be negative.");
+
             var ticket = _mapper.Map<Ticket>(dto);
 
             await _unitOfWork.Tickets.AddAsync(ticket);
@@ -82,6 +83,22 @@ namespace AirportTool.Application.Services
 
             _logger.LogWarning("Ticket deleted. TicketId={TicketId}", ticketId);
 
+        }
+
+        public async Task<int> CalculateSeatsAvailableAsync(int aircraftId)
+        {
+            var aircraft = await _unitOfWork.Aircrafts.GetByIdAsync(aircraftId);
+            if (aircraft == null)
+                throw new NotFoundException("Aircraft", aircraftId);
+
+            var capacity = aircraft.SeatCapacity;
+
+            var bookings = await _unitOfWork.Bookings.GetAllAsync();
+            var soldSeats = bookings.Sum(b => b.Quantity);
+
+            var seatsAvailable = capacity - soldSeats;
+
+            return seatsAvailable;
         }
     }
 
