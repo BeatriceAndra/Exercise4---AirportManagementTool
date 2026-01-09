@@ -7,7 +7,7 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace AirportTool.Tests.Application.Services
+namespace AirportTool.Tests.Services
 {
     public class BookingServiceTests
     {

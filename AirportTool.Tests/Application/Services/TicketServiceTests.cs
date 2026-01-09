@@ -6,7 +6,7 @@ using AirportTool.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace AirportTool.Tests.ApplicationServices
+namespace AirportTool.Tests.Services
 {
     public class TicketServiceTests
     {
